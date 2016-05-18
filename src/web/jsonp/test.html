@@ -1,0 +1,12 @@
+<script>
+    dom.ready(function () {
+        setInterval(function () {
+            http.jsonp({
+                url: 'http://b.com/jsonp/server.php',
+                success: function (data) {
+                    monitor.log(data);
+                }
+            })
+        }, 1000);
+    });
+</script>
