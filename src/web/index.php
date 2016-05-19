@@ -33,7 +33,7 @@
     <script src="assets/js/libs/jsonp.js"></script>
 </head>
 <body>
-    <div class="wrapper">
+    <div id="wrapper">
         <header>
             <h1><?php echo $page ? $page : $title ?></h1>
         </header>
@@ -46,14 +46,20 @@
                 echo '</ul>';
             }?>
         </div>
-        <div id="code">
-            <pre>
-            </pre>
-        </div>
         <div id="page">
-            <?php $page && include $page; ?>
+            <?php if (!empty($page)) {
+                include $page;
+            } else {?>
+                <script>
+                    http.get('http://b.com/data/test.json', null, function (res) {
+                        monitor.log(res);
+                    })
+                </script>
+            <?php }?>
         </div>
     </div>
+    <?php if (!empty($page)) {?>
     <script src="../assets/js/libs/monitor.js"></script>
+    <?php }?>
 </body>
 </html>

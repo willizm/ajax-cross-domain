@@ -62,6 +62,7 @@ var http = http || {};
         });
         var options = {
             url: url,
+            method: 'POST',
             data: formdata,
             success: success
         };

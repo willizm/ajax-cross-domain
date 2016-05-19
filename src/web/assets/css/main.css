@@ -1,0 +1,14 @@
+body {
+    font-family: monospace;
+}
+#wrapper {
+    padding: 20px 15px;
+}
+.nav-pages {
+    margin: 20px 0;
+}
+.nav-pages li {
+    list-style: inside square;
+    font-size: 14px;
+    line-height: 20px;
+}
