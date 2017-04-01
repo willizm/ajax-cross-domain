@@ -13,7 +13,8 @@
         'CORS' => 'cors/test',
         'JSONP' => 'jsonp/test',
         'NativeP' => 'nativep/test',
-        'Proxy' => 'proxy/test'
+        'Proxy' => 'proxy/test',
+        'iFrame' => 'iframe/test'
     );
 ?>
 <!doctype html>

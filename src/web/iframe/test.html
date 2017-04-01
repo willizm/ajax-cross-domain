@@ -1,0 +1,56 @@
+<script>
+    // cross domain
+    document.domain = 'c.com';
+
+    var proxyExcuterId = 0;
+    var iframeContext = null;
+    var iframeProxyTaskQueue = [];
+
+    // setup proxy iframe
+    var iframe = document.createElement('iframe');
+    iframe.src = "http://b.c.com/iframe/proxy.html";
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    iframe.onload = function() {
+        iframeContext = iframe.contentWindow;
+        while (iframeProxyTaskQueue.length > 0) {
+            iframeProxyTaskQueue.shift().call();
+        };
+    };
+
+    function httpWithiFrameProxy(url, params, success) {
+        var callbackName = `iframeproxycallback${++proxyExcuterId}`;
+        var excuterNodeId = `excuter${proxyExcuterId}`;
+        window[callbackName] = success;
+        var proxyExcuterNode = iframeContext.document.createElement('script');
+        proxyExcuterNode.id = excuterNodeId;
+        var proxyExcuterScript = `
+            var iframeproxycallback = parent.${callbackName};
+            http.get('${url}', ${JSON.stringify(params)}, function(res) {
+                    iframeproxycallback.call(null, res);
+                    document.getElementById('${excuterNodeId}').remove();
+                    // gc
+                    parent.${callbackName} = null;
+                }
+            );
+        `;
+        var runExcuter = function() {
+            proxyExcuterNode.innerHTML = proxyExcuterScript;
+            iframeContext.document.head.appendChild(proxyExcuterNode);
+        };
+        if (iframeContext) {
+            runExcuter();
+        } else {
+            iframeProxyTaskQueue.push(function() {
+                runExcuter();
+            })
+        }
+    }
+    // do request
+    setInterval(function() {
+        httpWithiFrameProxy('http://b.c.com/iframe/server.php', {a:33}, function (res) {
+            console.log('success')
+            monitor.log(res);
+        })
+    }, 1000);
+</script>
